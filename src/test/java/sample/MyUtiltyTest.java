@@ -1,25 +1,12 @@
 package sample;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static sample.util.Literals.*;
 public class MyUtiltyTest {
 
-    private static final String[] digits;
-    private static final String[] tens;
-    private static final String hundred = "yuz ";
-    private static final String thousand = "min ";
-    private static final String million = "milyon ";
-    private static final String billion = "milyard ";
-    private static final String EMPTY = "";
 
-    static {
-        digits = new String[]{"sifir ", "bir ", "iki ", "uc ", "dord ",
-                "bes ", "alti ", "yeddi ", "sekkiz ", "doqquz "};
-        tens = new String[]{"", "on ", "iyirmi ", "otuz ", "qirx ",
-                "elli ", "altmis ", "yetmis ", "seksen ", "doxsan "};
-
-    }
 
     @Test
     public void when_one_digit_then(){
@@ -99,39 +86,39 @@ public class MyUtiltyTest {
 
         assertEquals(MyUtilty.convertIntPart("1000000"),digits[1]+million);
         assertEquals(MyUtilty.convertIntPart("1011001"),digits[1]+million+tens[1]+digits[1]+thousand+digits[1]);
-        assertEquals(MyUtilty.convertIntPart("8762318").trim(),"sekkiz milyon yeddi yuz altmis iki min uc yuz on sekkiz");
+        assertEquals(MyUtilty.convertIntPart("8762318").trim(),"səkkiz milyon yeddi yüz altmış iki min üç yüz on səkkiz");
     }
 
     @Test
     public void when_8_digit_then(){
 
-        assertEquals(MyUtilty.convertIntPart("10010100").trim(),"on milyon on min bir yuz");
-        assertEquals(MyUtilty.convertIntPart("14100501").trim(),"on dord milyon bir yuz min bes yuz bir");
-        assertEquals(MyUtilty.convertIntPart("45314523").trim(),"qirx bes milyon uc yuz on dord min bes yuz iyirmi uc");
+        assertEquals(MyUtilty.convertIntPart("10010100").trim(),"on milyon on min bir yüz");
+        assertEquals(MyUtilty.convertIntPart("14100501").trim(),"on dörd milyon bir yüz min beş yüz bir");
+        assertEquals(MyUtilty.convertIntPart("45314523").trim(),"qırx beş milyon üç yüz on dörd min beş yüz iyirmi üç");
     }
 
     @Test
     public void when_10_digit_then(){
 
-        assertEquals(MyUtilty.convertIntPart("1001010550").trim(),"bir milyard bir milyon on min bes yuz elli");
-        assertEquals(MyUtilty.convertIntPart("6124100501").trim(),"alti milyard bir yuz iyirmi dord milyon bir yuz min bes yuz bir");
+        assertEquals(MyUtilty.convertIntPart("1001010550").trim(),"bir milyard bir milyon on min beş yüz əlli");
+        assertEquals(MyUtilty.convertIntPart("6124100501").trim(),"altı milyard bir yüz iyirmi dörd milyon bir yüz min beş yüz bir");
         assertEquals(MyUtilty.convertIntPart("1000000000").trim(),"bir milyard");
     }
 
     @Test
     public void when_9_digit_then(){
 
-        assertEquals(MyUtilty.convertIntPart("10010100").trim(),"on milyon on min bir yuz");
-        assertEquals(MyUtilty.convertIntPart("14100501").trim(),"on dord milyon bir yuz min bes yuz bir");
-        assertEquals(MyUtilty.convertIntPart("45314523").trim(),"qirx bes milyon uc yuz on dord min bes yuz iyirmi uc");
+        assertEquals(MyUtilty.convertIntPart("10010100").trim(),"on milyon on min bir yüz");
+        assertEquals(MyUtilty.convertIntPart("14100501").trim(),"on dörd milyon bir yüz min beş yüz bir");
+        assertEquals(MyUtilty.convertIntPart("45314523").trim(),"qırx beş milyon üç yüz on dörd min beş yüz iyirmi üç");
     }
 
     @Test
     public void when_12_digit_then(){
 
-        assertEquals(MyUtilty.convertIntPart("121432123452").trim(),"bir yuz iyirmi bir milyard dord yuz otuz iki milyon bir yuz iyirmi uc min dord yuz elli iki");
-        assertEquals(MyUtilty.convertIntPart("100000100000").trim(),"bir yuz milyard bir yuz min");
-        assertEquals(MyUtilty.convertIntPart("121001212001").trim(),"bir yuz iyirmi bir milyard bir milyon iki yuz on iki min bir");
+        assertEquals(MyUtilty.convertIntPart("121432123452").trim(),"bir yüz iyirmi bir milyard dörd yüz otuz iki milyon bir yüz iyirmi üç min dörd yüz əlli iki");
+        assertEquals(MyUtilty.convertIntPart("100000100000").trim(),"bir yüz milyard bir yüz min");
+        assertEquals(MyUtilty.convertIntPart("121001212001").trim(),"bir yüz iyirmi bir milyard bir milyon iki yüz on iki min bir");
     }
 
 

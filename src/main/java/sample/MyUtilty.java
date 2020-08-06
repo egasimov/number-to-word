@@ -1,57 +1,40 @@
 package sample;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import static sample.util.Literals.*;
 public class MyUtilty {
     private MyUtilty() {
-    }
-    private static final String[] digits;
-    private static final String[] tens;
-    private static final String hundred = "yuz ";
-    private static final String thousand = "min ";
-    private static final String million = "milyon ";
-    private static final String billion = "milyard ";
-    private static final String EMPTY = "";
-
-    static {
-        digits = new String[]{"sifir ", "bir ", "iki ", "uc ", "dord ",
-                "bes ", "alti ", "yeddi ", "sekkiz ", "doqquz "};
-        tens = new String[]{"", "on ", "iyirmi ", "otuz ", "qirx ",
-                "elli ", "altmis ", "yetmis ", "seksen ", "doxsan "};
-
+        throw new IllegalStateException("cannot be instantiated");
     }
 
-    public String convertToWord(Integer i) {
 
-        String number = String.valueOf(i);
+
+    public static String convertToWord(String originalNumber) {
+
+        //number beeing valid format checking feature will be added later
 
         //splitting number into integer and fractional part
-        String[] strings = number.split("[.]");
+        String[] strings = originalNumber.split("[.]");
 
-        StringBuilder builder = new StringBuilder();
+        String integerPart=convertIntPart(strings[0]);
+        String fractionalPart=convertFractionalPart(strings[1]);
 
-        //process integer part and add into buffer
-        builder.append(convertIntPart(strings[0]));
-
-        //process fractional part and add into buffer
-
-        builder.append(convertFractionalPart(strings[1]));
-
-        //collect result
-
-
-        return null;
+        return integerPart+separator+fractionalPart;
     }
 
+
     public static String convertIntPart(String integer) {
-        //does it contain , symbol ?
-        //integer = integer.replace("[,]", "");
+        //does it contain separator like ' , '
+        integer = integer.replaceAll("[,]", "");
 
         StringBuilder builder = new StringBuilder();
-        //starting from right hand side and start process
-//        boolean start=true;
-        int pos = 1;
-        for (int i = integer.length(); i >= 1; i = i - 3) {
+        //starting from right hand side ,pick up triples and start process it
+
+        int pos = 1; //used to indicate : level : 10^3,10^6,10^9
+        for (int i = integer.length(); i >= 0 /*1*/; i = i - 3) {
             String key = getKeyword(pos++);
             String handledTriple = handleTriple(integer.substring(i - 3 >= 0 ? i - 3 : 0, i));
             builder.insert(0, handledTriple.isEmpty() ? /*digits[1]*/EMPTY : handledTriple + key);
@@ -64,15 +47,19 @@ public class MyUtilty {
         String pos = null;
         switch (position) {
             case 1:
+                //first triple:10^3
                 pos = "";
                 break;
             case 2:
+                //second triple 10^6
                 pos = thousand;
                 break;
             case 3:
+                //third triple  10^9
                 pos = million;
                 break;
             case 4:
+                //fourth triple 10^12
                 pos = billion;
                 break;
         }
@@ -82,7 +69,7 @@ public class MyUtilty {
 
     public static String handleTriple(String triple) {
         StringBuilder tripleBuilder = new StringBuilder();
-        String word = null;
+        String word ;
 
         if (triple.length() == 1) {
             return digits[Integer.parseInt(triple)];
@@ -121,7 +108,7 @@ public class MyUtilty {
                     word = !prefix.isEmpty() ? prefix + hundred : EMPTY;
                     break;
                 default:
-                    throw new RuntimeException("Illegal case occured");
+                    throw new RuntimeException("Illegal case occured ");
             }
             tripleBuilder.insert(0, word);
         }
@@ -130,8 +117,62 @@ public class MyUtilty {
         return tripleBuilder.toString().replaceAll(digits[0], EMPTY);
     }
 
-    private static String convertFractionalPart(String fraction) {
-        return null;
+
+    public static String convertFractionalPart(String fraction) {
+        String prefix=getPrefixForFractions(fraction.length()); //on,min,on min ...
+        String suffix=getSuffixForFractions(prefix); // 'da','de'
+        String word=convertIntPart(fraction);
+
+        //prefix + "da , de ,son saite uygun"+ word
+
+        //putting all together
+        return prefix + suffix + " " + word;
+    }
+
+    private static String getSuffixForFractions(String prefix) {
+        //prefix deki son saitie gore define edek
+        List<Character> thin_letter= Arrays.asList('e', 'ə', 'i', 'ö', 'ü');
+        char ch=prefix.charAt(prefix.length()-2);
+
+        return  thin_letter.contains(ch) ? "də" : "da" ;
+    }
+
+    private static String getPrefixForFractions(int digitCounts){
+        //for now switch case is OK, later will be found dynamically
+        String prefix;
+        switch (digitCounts){
+            case 1:
+                prefix=tens[1];
+                break;
+            case 2:
+                prefix=hundred;
+                break;
+            case 3:
+                prefix=thousand;
+                break;
+            case 4:
+                prefix=tens[1] + thousand;
+                break;
+            case 5:
+                prefix=hundred+thousand;
+                break;
+            case 6:
+                prefix=million;
+                break;
+            case 7:
+                prefix=tens[1]+million;
+                break;
+            case 8:
+                prefix=hundred + million;
+                break;
+            case 9:
+                prefix=billion;
+                break;
+            default:
+                throw new IllegalArgumentException(digitCounts + " degree precision is not supported yet!");
+        }
+
+        return  prefix.trim();
     }
 
 }
